@@ -1,25 +1,15 @@
-enum Commands {
-    Add,
-    Update,
-    Delete,
-    ClearDone,
-    ListAll,
-    ListDone,
-    ListNotDone,
-    ListProgress,
-}
-enum CommandKind {
-    Modifying,
-    Querying,
-}
+use crate::entities::{command_kind::CommandKind, commands::Commands};
+
+#[derive(Debug)]
 pub struct Config {
-    command: Command,
-    task_id: Option<u8>,
-    task_name: Option<String>,
+    pub command: Command,
+    pub task_id: Option<u8>,
+    pub task_name: Option<String>,
 }
-struct Command {
-    kind: CommandKind,
-    name: Commands,
+#[derive(Debug)]
+pub struct Command {
+    pub kind: CommandKind,
+    pub name: Commands,
 }
 
 impl Config {
@@ -39,17 +29,8 @@ impl Config {
                 task_name: None,
             }),
             CommandKind::Modifying => {
-                let task_id: u8 = match args.next() {
-                    Some(task_id) => match task_id.parse() {
-                        Ok(task_id) => task_id,
-                        Err(_) => return Err("Error while try to parse task id"),
-                    },
-                    None => return Err("No task id provided"),
-                };
-                let task_name = match args.next() {
-                    Some(task_name) => task_name,
-                    None => return Err("No task name provided"),
-                };
+                let task_id: u8 = Self::parse_task_id(&mut args)?;
+                let task_name = Self::parse_task_name(&mut args)?;
                 Ok(Config {
                     command: command,
                     task_id: Some(task_id),
@@ -58,7 +39,28 @@ impl Config {
             }
         }
     }
+    fn parse_task_id(args: &mut impl Iterator<Item = String>) -> Result<u8, &'static str> {
+        match args.next() {
+            Some(task_id) => match task_id.parse() {
+                Ok(task_id) => Ok(task_id),
+                Err(_) => Err("Error while try to parse task id"),
+            },
+            None => Err("No task id provided"),
+        }
+    }
+    fn parse_task_name(args: &mut impl Iterator<Item = String>) -> Result<String, &'static str> {
+        match args.next() {
+            Some(task_name) => {
+                if task_name == "" {
+                    return Err("Task name cannot be empty");
+                }
+                Ok(task_name)
+            }
+            None => Err("No task name provided"),
+        }
+    }
 }
+
 impl Command {
     fn parse_command(command_string: String) -> Result<Command, &'static str> {
         match command_string.as_str() {
@@ -73,6 +75,14 @@ impl Command {
             "delete" => Ok(Command {
                 kind: CommandKind::Modifying,
                 name: Commands::Delete,
+            }),
+            "mark-in-progress" => Ok(Command {
+                kind: CommandKind::Modifying,
+                name: Commands::MarkInProgress,
+            }),
+            "mark-done" => Ok(Command {
+                kind: CommandKind::Modifying,
+                name: Commands::MarkDone,
             }),
             "clear-done" => Ok(Command {
                 kind: CommandKind::Modifying,
