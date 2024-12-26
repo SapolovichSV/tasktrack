@@ -5,9 +5,8 @@ use std::{
     path::PathBuf,
 };
 
-use crate::model::entities::{self};
-
 use super::ModifyStorage;
+use crate::entities::task;
 
 pub fn new(root: String) -> Result<Storage, Box<dyn Error>> {
     let path = PathBuf::from(root);
@@ -64,10 +63,10 @@ impl Storage {
         (self.root.join(new_part_path), new_id)
     }
 
-    fn form_new_task(&self, last_id: u8, task_name: &String) -> entities::Task {
-        let mut task = entities::new(task_name.clone());
+    fn form_new_task(&self, last_id: u8, task_name: &String) -> task::Task {
+        let mut task = task::new(task_name.clone());
         task.set_id(last_id + 1);
-        task.set_status(entities::TaskStatus::NotDone);
+        task.set_status(task::TaskStatus::NotDone);
         task
     }
 }

@@ -1,8 +1,7 @@
 use std::error::Error;
 
-use crate::{config::Config, entities::commands::Commands};
-
-use super::{storage, Model};
+use super::{storage, Config, Model};
+use crate::entities::commands::Commands;
 const ROOTPATH: &str = "./tasks";
 pub struct ModifyModel {
     command: Commands,

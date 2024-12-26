@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use super::entities::Task;
+use crate::entities::task::Task;
 pub mod fsstorage;
 pub trait ModifyStorage {
     fn add_task(&self, task_name: &String) -> Result<u8, Box<dyn Error>>;

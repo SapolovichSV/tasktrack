@@ -1,8 +1,4 @@
-use crate::{
-    config::Config,
-    entities::command_kind::{self, CommandKind},
-};
-mod entities;
+use crate::{config::config::Config, entities::command_kind};
 mod modify_model;
 mod query_model;
 mod storage;
@@ -14,8 +10,8 @@ pub trait ModelFactory {
 }
 pub fn get_factory(query_type: &command_kind::CommandKind) -> Box<dyn ModelFactory> {
     match query_type {
-        CommandKind::Querying => Box::new(QueryFactory),
-        CommandKind::Modifying => Box::new(ModifyFactory),
+        command_kind::CommandKind::Querying => Box::new(QueryFactory),
+        command_kind::CommandKind::Modifying => Box::new(ModifyFactory),
     }
 }
 
