@@ -11,8 +11,8 @@ pub trait ModifyStorage {
     fn clear_done(&self) -> Result<(), Box<dyn Error>>;
 }
 pub trait QueryStorage {
-    fn get_all_tasks() -> Result<Vec<Task>, impl Error>;
-    fn get_done_tasks() -> Result<Vec<Task>, impl Error>;
-    fn get_not_done_tasks() -> Result<Vec<Task>, impl Error>;
-    fn get_progress_tasks() -> Result<Vec<Task>, impl Error>;
+    fn get_all_tasks() -> Result<Vec<Task>, Box<dyn Error>>;
+    fn get_done_tasks() -> Result<Vec<Task>, Box<dyn Error>>;
+    fn get_not_done_tasks() -> Result<Vec<Task>, Box<dyn Error>>;
+    fn get_progress_tasks() -> Result<Vec<Task>, Box<dyn Error>>;
 }

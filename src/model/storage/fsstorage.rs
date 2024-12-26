@@ -11,33 +11,25 @@ use super::ModifyStorage;
 
 pub fn new(root: String) -> Result<Storage, Box<dyn Error>> {
     let path = PathBuf::from(root);
-    match fs::exists(&path) {
-        Ok(true) => Ok(Storage { root: path }),
-        Ok(false) => {
-            fs::create_dir_all(&path)?;
-            Ok(Storage { root: path })
-        }
-        Err(e) => Err(Box::new(e)),
+    if !path.exists() {
+        fs::create_dir_all(&path)?;
     }
+    Ok(Storage { root: path })
 }
 pub struct Storage {
     root: PathBuf,
 }
 impl ModifyStorage for Storage {
     fn add_task(&self, task_name: &String) -> Result<u8, Box<dyn Error>> {
-        match self.find_last_id() {
-            Ok(last_id) => {
-                let task = self.form_new_task(last_id, task_name);
-                let (file_path, new_id) = self.form_new_task_path(&last_id);
+        let last_id = self.find_last_id()?;
+        let task = self.form_new_task(last_id, task_name);
+        let (file_path, new_id) = self.form_new_task_path(last_id);
 
-                let mut file = File::create(file_path)?;
-                let json_data = serde_json::to_string(&task)?;
+        let mut file = File::create(file_path)?;
+        let json_data = serde_json::to_string(&task)?;
 
-                file.write(json_data.as_bytes())?;
-                Ok(new_id)
-            }
-            Err(e) => Err(e),
-        }
+        file.write_all(json_data.as_bytes())?;
+        Ok(new_id)
     }
 
     fn update_task(&self, task_id: &u8) -> Result<(), Box<dyn Error>> {
@@ -66,16 +58,15 @@ impl Storage {
         Ok(last_id)
     }
 
-    fn form_new_task_path(&self, last_id: &u8) -> (PathBuf, u8) {
+    fn form_new_task_path(&self, last_id: u8) -> (PathBuf, u8) {
         let new_id = last_id + 1;
-        let new_part_path = "task_".to_string() + &new_id.to_string() + ".json";
-        (self.root.join(new_part_path), last_id + 1)
+        let new_part_path = format!("task_{}.json", new_id);
+        (self.root.join(new_part_path), new_id)
     }
 
     fn form_new_task(&self, last_id: u8, task_name: &String) -> entities::Task {
-        let new_id = last_id + 1;
         let mut task = entities::new(task_name.clone());
-        task.set_id(new_id.clone());
+        task.set_id(last_id + 1);
         task.set_status(entities::TaskStatus::NotDone);
         task
     }
