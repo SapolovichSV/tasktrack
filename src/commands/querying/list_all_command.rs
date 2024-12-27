@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::{config, storage::QueryStorage};
 
-use super::{BaseQueryCommand, Command};
+use super::super::{BaseQueryCommand, Command};
 
 pub struct ListAllCommand {
     base: BaseQueryCommand,

@@ -1,6 +1,6 @@
 use crate::{config, entities, storage};
 
-use super::{BaseModifyCommand, Command};
+use super::super::{BaseModifyCommand, Command};
 
 pub struct UpdateNameCommand {
     base: BaseModifyCommand,

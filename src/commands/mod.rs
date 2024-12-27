@@ -1,13 +1,10 @@
 use std::error::Error;
-mod add_command;
-mod clear_done;
+
 pub mod commands_factory;
-mod delete_command;
-mod list_all_command;
-mod list_done_command;
-mod mark_done_command;
-mod mark_in_progess_command;
-mod update_command;
+
+mod modifying;
+mod querying;
+
 use crate::config;
 use crate::entities;
 use crate::storage;
@@ -33,17 +30,21 @@ impl BaseQueryCommand {
     pub fn new(storage: Box<dyn storage::QueryStorage>) -> BaseQueryCommand {
         BaseQueryCommand { storage }
     }
-    fn task_status_is_done(&self, task_id: u8) -> Result<bool, Box<dyn Error>> {
+    fn task_status_is(
+        &self,
+        task_id: u8,
+        task_status: entities::task::TaskStatus,
+    ) -> Result<bool, Box<dyn Error>> {
         let task = self.storage.read_task(&task_id);
         let task = match task {
             Ok(task) => task,
             Err(_) => return Ok(false),
         };
-        if let entities::task::TaskStatus::Done = task.get_status() {
-            return Ok(true);
-        } else {
-            return Ok(false);
-        }
+        // match task_status {
+        //
+        // }
+        let current_status = task.get_status();
+        Ok(*current_status == task_status)
     }
     fn print_task(&self, task: entities::task::Task, task_id: u8) {
         println!(

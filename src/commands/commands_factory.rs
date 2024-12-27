@@ -1,16 +1,12 @@
 use std::error::Error;
 
-use crate::{config, entities, storage::StorageType};
-
-use super::add_command;
-use super::clear_done;
-use super::delete_command;
-use super::list_all_command;
-use super::list_done_command;
-use super::mark_done_command;
-use super::mark_in_progess_command;
-use super::update_command;
+use super::modifying::{
+    add_command, clear_done, delete_command, mark_done_command, mark_in_progess_command,
+    update_command,
+};
+use super::querying::{list_all_command, list_done_command, list_not_done_command};
 use super::Command;
+use super::{config, entities, storage::StorageType};
 
 pub fn create_command(
     config: config::Config,
@@ -62,7 +58,7 @@ fn create_querying_command(
             Ok(Box::new(list_done_command::new(config, storage)))
         }
         entities::commands::Commands::ListNotDone => {
-            todo!()
+            Ok(Box::new(list_not_done_command::new(config, storage)))
         }
         entities::commands::Commands::ListProgress => {
             todo!()

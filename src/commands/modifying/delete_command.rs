@@ -1,7 +1,7 @@
 use crate::config;
 use crate::storage::ModifyStorage;
 
-use super::{BaseModifyCommand, Command};
+use super::super::{BaseModifyCommand, Command};
 pub struct DeleteCommand {
     base: BaseModifyCommand,
 }

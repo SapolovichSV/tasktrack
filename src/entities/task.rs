@@ -22,7 +22,7 @@ impl Task {
         &self.task_name
     }
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum TaskStatus {
     Done,
     InProgress,

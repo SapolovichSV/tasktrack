@@ -1,6 +1,6 @@
 use crate::{config, storage};
 
-use super::{BaseQueryCommand, Command};
+use super::super::{entities, BaseQueryCommand, Command};
 
 pub struct ListDoneCommand {
     base: BaseQueryCommand,
@@ -10,7 +10,10 @@ impl Command for ListDoneCommand {
         let last_task_number = self.base.storage.last_id()?;
         println!("Tasks -----------------");
         for id in 1..last_task_number {
-            match self.base.task_status_is_done(id) {
+            match self
+                .base
+                .task_status_is(id, entities::task::TaskStatus::Done)
+            {
                 Ok(true) => {
                     let task = self.base.storage.read_task(&id)?;
                     self.base.print_task(task, id);

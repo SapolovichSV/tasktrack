@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::{config, storage::ModifyStorage};
 
-use super::{BaseModifyCommand, Command};
+use super::super::{BaseModifyCommand, Command};
 
 pub struct AddCommand {
     base: BaseModifyCommand,

@@ -1,30 +1,25 @@
-use crate::{config, entities, storage};
+use crate::config;
+use crate::storage::ModifyStorage;
 
-use super::{BaseModifyCommand, Command};
-
-pub struct MarkInProgressCommand {
+use super::super::entities;
+use super::super::{BaseModifyCommand, Command};
+pub struct MarkDoneCommand {
     base: BaseModifyCommand,
 }
-impl Command for MarkInProgressCommand {
+impl Command for MarkDoneCommand {
     fn execute(&self) -> Result<(), Box<dyn std::error::Error>> {
         let task_id = match self.base.config.task_id {
             Some(id) => id,
             None => return Err("Task id is required".into()),
         };
-
         let mut task = self.base.storage.read_task(&task_id)?;
-
-        task.set_status(entities::task::TaskStatus::InProgress);
-
+        task.set_status(entities::task::TaskStatus::Done);
         self.base.storage.update_task(&task_id, task)?;
         Ok(())
     }
 }
-pub fn new(
-    config: config::Config,
-    storage: Box<dyn storage::ModifyStorage>,
-) -> MarkInProgressCommand {
-    MarkInProgressCommand {
+pub fn new(config: config::Config, storage: Box<dyn ModifyStorage>) -> MarkDoneCommand {
+    MarkDoneCommand {
         base: BaseModifyCommand::new(config, storage),
     }
 }
