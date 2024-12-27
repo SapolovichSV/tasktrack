@@ -20,7 +20,9 @@
                 }
             },
             "args": [
-                "list-all"
+                "clear-done",
+                "0",
+                "some",
             ],
             "cwd": "${workspaceFolder}"
         },

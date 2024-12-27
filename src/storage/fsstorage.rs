@@ -21,7 +21,10 @@ pub struct Storage {
 }
 impl ModifyStorage for Storage {
     fn add_task(&self, task_name: &str) -> Result<u8, Box<dyn Error>> {
-        let last_id = self.find_last_id()?;
+        let last_id = match self.find_last_id() {
+            Ok(id) => id,
+            Err(_) => 0,
+        };
         let task = self.form_new_task(last_id, task_name);
         let (file_path, new_id) = self.form_new_task_path(last_id);
 
@@ -53,25 +56,42 @@ impl ModifyStorage for Storage {
         Ok(())
     }
     fn read_task(&self, task_id: &u8) -> Result<Task, Box<dyn Error>> {
-        self.read_task(task_id)
+        match self.read_task(task_id) {
+            Ok(task) => Ok(task),
+            Err(e) => Err(e),
+        }
     }
 }
 impl QueryStorage for Storage {
     fn read_task(&self, task_id: &u8) -> Result<Task, Box<dyn Error>> {
         self.read_task(task_id)
     }
-    fn len_storage(&self) -> Result<usize, Box<dyn Error>> {
-        let len = fs::read_dir(&self.root)?.count();
-        Ok(len)
+    fn last_id(&self) -> Result<u8, Box<dyn Error>> {
+        self.find_last_id()
     }
 }
 impl Storage {
     fn find_last_id(&self) -> Result<u8, Box<dyn Error>> {
-        let last_id = fs::read_dir(&self.root)?
-            .count()
-            .try_into()
-            .map_err(|_| "Error: Cannot convert to u8")?;
-        println!("Last id: {}", last_id);
+        let last_id = fs::read_dir(&self.root)?.into_iter().last();
+        let last_id = match last_id {
+            Some(entry) => {
+                let entry = entry?;
+
+                let file_name = entry.file_name();
+                let file_name = match file_name.to_str() {
+                    Some(name) => name,
+                    None => return Err("Invalid file name".into()),
+                };
+                let id: u8 = file_name
+                    .strip_prefix("task_")
+                    .ok_or("Invalid file name")?
+                    .strip_suffix(".json")
+                    .ok_or("Invalid file name")?
+                    .parse()?;
+                id
+            }
+            None => return Err("Can't parse dir for last id")?,
+        };
         Ok(last_id)
     }
 

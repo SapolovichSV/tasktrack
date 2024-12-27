@@ -3,8 +3,11 @@ use std::error::Error;
 use crate::{config, entities, storage::StorageType};
 
 use super::add_command;
+use super::clear_done;
 use super::delete_command;
 use super::list_all_command;
+use super::list_done_command;
+use super::mark_done_command;
 use super::mark_in_progess_command;
 use super::update_command;
 use super::Command;
@@ -36,11 +39,9 @@ fn create_modifying_command(
             Ok(Box::new(mark_in_progess_command::new(config, storage)))
         }
         entities::commands::Commands::MarkDone => {
-            todo!()
+            Ok(Box::new(mark_done_command::new(config, storage)))
         }
-        entities::commands::Commands::ClearDone => {
-            todo!()
-        }
+        entities::commands::Commands::ClearDone => Ok(Box::new(clear_done::new(config, storage))),
         _ => Err("Invalid command".into()),
     }
 }
@@ -58,7 +59,7 @@ fn create_querying_command(
             Ok(Box::new(list_all_command::new(config, storage)))
         }
         entities::commands::Commands::ListDone => {
-            todo!()
+            Ok(Box::new(list_done_command::new(config, storage)))
         }
         entities::commands::Commands::ListNotDone => {
             todo!()

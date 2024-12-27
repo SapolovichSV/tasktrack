@@ -10,17 +10,15 @@ pub struct ListAllCommand {
 
 impl Command for ListAllCommand {
     fn execute(&self) -> Result<(), Box<dyn Error>> {
-        let tasks_count = self.base.storage.len_storage()?;
-        println!("Total tasks: {}", tasks_count);
+        let last_task_number = self.base.storage.last_id()?;
+        println!("Tasks -----------------");
 
-        for i in 1..=tasks_count {
-            let task = self.base.storage.read_task(&i.try_into()?)?;
-            println!(
-                "Task id: {} name: {} status: {}",
-                i,
-                task.get_name(),
-                task.get_status()
-            );
+        for id in 1..=last_task_number {
+            let task = self.base.storage.read_task(&id);
+            match task {
+                Ok(task) => self.base.print_task(task, id),
+                Err(_) => continue,
+            }
         }
         Ok(())
     }

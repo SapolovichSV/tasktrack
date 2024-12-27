@@ -14,5 +14,5 @@ pub trait ModifyStorage {
 }
 pub trait QueryStorage {
     fn read_task(&self, task_id: &u8) -> Result<Task, Box<dyn Error>>;
-    fn len_storage(&self) -> Result<usize, Box<dyn Error>>;
+    fn last_id(&self) -> Result<u8, Box<dyn Error>>;
 }
