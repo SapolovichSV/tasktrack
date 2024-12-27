@@ -3,7 +3,9 @@ use std::error::Error;
 use crate::{config, entities, storage::StorageType};
 
 use super::add_command;
+use super::delete_command;
 use super::list_all_command;
+use super::mark_in_progess_command;
 use super::update_command;
 use super::Command;
 
@@ -28,11 +30,10 @@ fn create_modifying_command(
     match config.command.name {
         entities::commands::Commands::Add => Ok(Box::new(add_command::new(config, storage))),
         entities::commands::Commands::Update => Ok(Box::new(update_command::new(config, storage))),
-        entities::commands::Commands::Delete => {
-            todo!()
-        }
+        entities::commands::Commands::Delete => Ok(Box::new(delete_command::new(config, storage))),
+
         entities::commands::Commands::MarkInProgress => {
-            todo!()
+            Ok(Box::new(mark_in_progess_command::new(config, storage)))
         }
         entities::commands::Commands::MarkDone => {
             todo!()

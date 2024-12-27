@@ -11,7 +11,6 @@ fn main() {
         eprintln!("Error: {}", x);
         std::process::exit(1)
     });
-    println!("{:?}", config);
     let stg = match storage::fsstorage::new("./tasks".to_string()) {
         Ok(storage) => Box::new(storage),
         Err(e) => {

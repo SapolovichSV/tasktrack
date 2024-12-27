@@ -1,25 +1,22 @@
 use crate::{config, entities, storage};
 
-use super::Command;
+use super::{BaseModifyCommand, Command};
 
 pub struct UpdateNameCommand {
-    config: config::Config,
-    storage: Box<dyn storage::ModifyStorage>,
+    base: BaseModifyCommand,
 }
-pub fn new(config: config::Config, storage: Box<dyn storage::ModifyStorage>) -> UpdateNameCommand {
-    UpdateNameCommand { config, storage }
-}
+
 impl Command for UpdateNameCommand {
     fn execute(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let task_id = match self.config.task_id {
+        let task_id = match self.base.config.task_id {
             Some(id) => id,
             None => {
                 return Err("Task id is required".into());
             }
         };
 
-        let old_task = self.storage.read_task(&task_id)?;
-        let new_task_name = match &self.config.task_name {
+        let old_task = self.base.storage.read_task(&task_id)?;
+        let new_task_name = match &self.base.config.task_name {
             Some(name) => name,
             None => return Err("Task name is required".into()),
         };
@@ -30,6 +27,11 @@ impl Command for UpdateNameCommand {
             "Task updated with id: {} new name is {}",
             task_id, new_task_name
         );
-        self.storage.update_task(&task_id, updated_task)
+        self.base.storage.update_task(&task_id, updated_task)
+    }
+}
+pub fn new(config: config::Config, storage: Box<dyn storage::ModifyStorage>) -> UpdateNameCommand {
+    UpdateNameCommand {
+        base: BaseModifyCommand::new(config, storage),
     }
 }

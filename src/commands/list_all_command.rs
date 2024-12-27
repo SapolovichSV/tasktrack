@@ -2,19 +2,19 @@ use std::error::Error;
 
 use crate::{config, storage::QueryStorage};
 
-use super::Command;
+use super::{BaseQueryCommand, Command};
 
 pub struct ListAllCommand {
-    storage: Box<dyn QueryStorage>,
+    base: BaseQueryCommand,
 }
 
 impl Command for ListAllCommand {
     fn execute(&self) -> Result<(), Box<dyn Error>> {
-        let tasks_count = self.storage.len_storage()?;
+        let tasks_count = self.base.storage.len_storage()?;
         println!("Total tasks: {}", tasks_count);
 
         for i in 1..=tasks_count {
-            let task = self.storage.read_task(&i.try_into()?)?;
+            let task = self.base.storage.read_task(&i.try_into()?)?;
             println!(
                 "Task id: {} name: {} status: {}",
                 i,
@@ -27,5 +27,7 @@ impl Command for ListAllCommand {
 }
 pub fn new(config: config::Config, storage: Box<dyn QueryStorage>) -> ListAllCommand {
     let _config = config;
-    ListAllCommand { storage }
+    ListAllCommand {
+        base: BaseQueryCommand::new(storage),
+    }
 }
