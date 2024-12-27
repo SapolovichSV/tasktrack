@@ -1,5 +1,5 @@
 use crate::entities::{command_kind::CommandKind, commands::Commands};
-use std::env;
+use std::{env, error::Error};
 #[derive(Debug)]
 
 pub struct Config {
@@ -13,14 +13,14 @@ pub struct Command {
     pub name: Commands,
 }
 impl Config {
-    pub fn build(mut args: env::Args) -> Result<Config, &'static str> {
+    pub fn build(mut args: env::Args) -> Result<Config, Box<dyn Error>> {
         args.next();
         let command = match args.next() {
             Some(command) => match Command::parse_command(command) {
                 Ok(command) => command,
                 Err(e) => return Err(e),
             },
-            None => return Err("No command provided"),
+            None => return Err("No command provided".into()),
         };
         match command.kind {
             CommandKind::Querying => Ok(Config {
@@ -29,39 +29,45 @@ impl Config {
                 task_name: None,
             }),
             CommandKind::Modifying => {
-                let task_id: u8 = Self::parse_task_id(&mut args)?;
-                let task_name = Self::parse_task_name(&mut args)?;
+                let task_id = match Self::parse_task_id(&mut args) {
+                    Ok(task_id) => Some(task_id),
+                    Err(e) => None,
+                };
+                let task_name = match Self::parse_task_name(&mut args) {
+                    Ok(task_name) => Some(task_name),
+                    Err(e) => None,
+                };
                 Ok(Config {
                     command,
-                    task_id: Some(task_id),
-                    task_name: Some(task_name),
+                    task_id: task_id,
+                    task_name: task_name,
                 })
             }
         }
     }
-    fn parse_task_id(args: &mut impl Iterator<Item = String>) -> Result<u8, &'static str> {
+    fn parse_task_id(args: &mut impl Iterator<Item = String>) -> Result<u8, Box<dyn Error>> {
         match args.next() {
             Some(task_id) => match task_id.parse() {
                 Ok(task_id) => Ok(task_id),
-                Err(_) => Err("Error while try to parse task id"),
+                Err(_) => Err("Error while try to parse task id".into()),
             },
-            None => Err("No task id provided"),
+            None => Err("No task id provided".into()),
         }
     }
-    fn parse_task_name(args: &mut impl Iterator<Item = String>) -> Result<String, &'static str> {
+    fn parse_task_name(args: &mut impl Iterator<Item = String>) -> Result<String, Box<dyn Error>> {
         match args.next() {
             Some(task_name) => {
                 if task_name.is_empty() {
-                    return Err("Task name cannot be empty");
+                    return Err("Task name cannot be empty".into());
                 }
                 Ok(task_name)
             }
-            None => Err("No task name provided"),
+            None => Err("No task name provided".into()),
         }
     }
 }
 impl Command {
-    fn parse_command(command_string: String) -> Result<Command, &'static str> {
+    fn parse_command(command_string: String) -> Result<Command, Box<dyn Error>> {
         match command_string.as_str() {
             "add" => Ok(Command {
                 kind: CommandKind::Modifying,
@@ -103,7 +109,7 @@ impl Command {
                 kind: CommandKind::Querying,
                 name: Commands::ListProgress,
             }),
-            _ => Err("Invalid command"),
+            _ => Err("Invalid command".into()),
         }
     }
 }
