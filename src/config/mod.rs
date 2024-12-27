@@ -31,16 +31,16 @@ impl Config {
             CommandKind::Modifying => {
                 let task_id = match Self::parse_task_id(&mut args) {
                     Ok(task_id) => Some(task_id),
-                    Err(e) => None,
+                    _ => None,
                 };
                 let task_name = match Self::parse_task_name(&mut args) {
                     Ok(task_name) => Some(task_name),
-                    Err(e) => None,
+                    _ => None,
                 };
                 Ok(Config {
                     command,
-                    task_id: task_id,
-                    task_name: task_name,
+                    task_id,
+                    task_name,
                 })
             }
         }

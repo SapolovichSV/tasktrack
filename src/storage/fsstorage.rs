@@ -21,10 +21,7 @@ pub struct Storage {
 }
 impl ModifyStorage for Storage {
     fn add_task(&self, task_name: &str) -> Result<u8, Box<dyn Error>> {
-        let last_id = match self.find_last_id() {
-            Ok(id) => id,
-            Err(_) => 0,
-        };
+        let last_id = self.find_last_id().unwrap_or_default();
         let task = self.form_new_task(last_id, task_name);
         let (file_path, new_id) = self.form_new_task_path(last_id);
 
@@ -72,7 +69,7 @@ impl QueryStorage for Storage {
 }
 impl Storage {
     fn find_last_id(&self) -> Result<u8, Box<dyn Error>> {
-        let last_id = fs::read_dir(&self.root)?.into_iter().last();
+        let last_id = fs::read_dir(&self.root)?.last();
         let last_id = match last_id {
             Some(entry) => {
                 let entry = entry?;
