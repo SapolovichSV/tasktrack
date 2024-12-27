@@ -50,8 +50,10 @@ Implements persistence for tasks using the file system. Provides methods to add,
    - `<task_id>`: The ID of the task (use `_` if not applicable).
    - `<task_name>`: The name of the task (use `_` if not applicable).
    - Build the project:
-    cd /directory/with/project
-    cargo build --release
+   ```bash
+   cd /directory/with/project
+   cargo build --release
+   ```
    tacktrack <command> <task_id> <task_name>
    For example:
    ```bash
