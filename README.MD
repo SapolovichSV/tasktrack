@@ -60,3 +60,4 @@ Implements persistence for tasks using the file system. Provides methods to add,
    tasktrack add - "Finish Rust project"
    tasktrack list-all _ _
    tasktrack mark-done 1 _
+2. **Project Idea**: The idea for this project was inspired by [this task tracker project](https://roadmap.sh/projects/task-tracker).
