@@ -7,7 +7,7 @@ mod entities;
 mod storage;
 
 fn main() {
-    let config = config::config::Config::build(env::args()).unwrap_or_else(|x| {
+    let config = config::Config::build(env::args()).unwrap_or_else(|x| {
         eprintln!("Error: {}", x);
         std::process::exit(1)
     });

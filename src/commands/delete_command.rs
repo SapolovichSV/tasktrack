@@ -1,4 +1,4 @@
-use crate::config::config;
+use crate::config;
 use crate::storage::ModifyStorage;
 
 use super::Command;

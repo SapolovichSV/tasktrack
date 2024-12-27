@@ -1,11 +1,11 @@
 use std::error::Error;
 
-use crate::{config::config::Config, storage::ModifyStorage};
+use crate::{config, storage::ModifyStorage};
 
 use super::Command;
 
 pub struct AddCommand {
-    config: Config,
+    config: config::Config,
     storage: Box<dyn ModifyStorage>,
 }
 
@@ -17,11 +17,11 @@ impl Command for AddCommand {
                 return Err("Task name is required".into());
             }
         };
-        let task_id = self.storage.add_task(&task_name)?;
+        let task_id = self.storage.add_task(task_name)?;
         println!("Task added with id: {}", task_id);
         Ok(())
     }
 }
-pub fn new(config: Config, storage: Box<dyn ModifyStorage>) -> AddCommand {
+pub fn new(config: config::Config, storage: Box<dyn ModifyStorage>) -> AddCommand {
     AddCommand { config, storage }
 }

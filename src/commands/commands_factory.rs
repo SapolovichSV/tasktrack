@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{config::config, entities, storage::StorageType};
+use crate::{config, entities, storage::StorageType};
 
 use super::add_command;
 use super::list_all_command;
@@ -40,7 +40,7 @@ fn create_modifying_command(
         entities::commands::Commands::ClearDone => {
             todo!()
         }
-        _ => return Err("Invalid command".into()),
+        _ => Err("Invalid command".into()),
     }
 }
 

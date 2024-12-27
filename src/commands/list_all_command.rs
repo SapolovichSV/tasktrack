@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{config::config::Config, storage::QueryStorage};
+use crate::{config, storage::QueryStorage};
 
 use super::Command;
 
@@ -25,7 +25,7 @@ impl Command for ListAllCommand {
         Ok(())
     }
 }
-pub fn new(config: Config, storage: Box<dyn QueryStorage>) -> ListAllCommand {
+pub fn new(config: config::Config, storage: Box<dyn QueryStorage>) -> ListAllCommand {
     let _config = config;
     ListAllCommand { storage }
 }

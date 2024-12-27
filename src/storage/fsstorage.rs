@@ -20,7 +20,7 @@ pub struct Storage {
     root: PathBuf,
 }
 impl ModifyStorage for Storage {
-    fn add_task(&self, task_name: &String) -> Result<u8, Box<dyn Error>> {
+    fn add_task(&self, task_name: &str) -> Result<u8, Box<dyn Error>> {
         let last_id = self.find_last_id()?;
         let task = self.form_new_task(last_id, task_name);
         let (file_path, new_id) = self.form_new_task_path(last_id);
@@ -81,8 +81,8 @@ impl Storage {
         (self.root.join(new_part_path), new_id)
     }
 
-    fn form_new_task(&self, last_id: u8, task_name: &String) -> task::Task {
-        let mut task = task::new(task_name.clone());
+    fn form_new_task(&self, last_id: u8, task_name: &str) -> task::Task {
+        let mut task = task::new(task_name.to_owned());
         task.set_id(last_id + 1);
         task.set_status(task::TaskStatus::NotDone);
         task

@@ -7,7 +7,7 @@ pub enum StorageType {
     Query(Box<dyn QueryStorage>),
 }
 pub trait ModifyStorage {
-    fn add_task(&self, task_name: &String) -> Result<u8, Box<dyn Error>>;
+    fn add_task(&self, task_name: &str) -> Result<u8, Box<dyn Error>>;
     fn read_task(&self, task_id: &u8) -> Result<Task, Box<dyn Error>>;
     fn update_task(&self, task_id: &u8, updated_task: Task) -> Result<(), Box<dyn Error>>;
     fn delete_task(&self, task_id: &u8) -> Result<(), Box<dyn Error>>;

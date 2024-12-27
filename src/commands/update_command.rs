@@ -1,4 +1,4 @@
-use crate::{config::config, entities, storage};
+use crate::{config, entities, storage};
 
 use super::Command;
 
