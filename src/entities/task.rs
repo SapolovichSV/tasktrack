@@ -12,12 +12,39 @@ impl Task {
     pub fn set_status(&mut self, status: TaskStatus) {
         self.task_status = status;
     }
+    pub fn set_name(&mut self, name: String) {
+        self.task_name = name;
+    }
+    pub fn get_status(&self) -> &TaskStatus {
+        &self.task_status
+    }
+    pub fn get_name(&self) -> &String {
+        &self.task_name
+    }
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub enum TaskStatus {
     Done,
     InProgress,
     NotDone,
+}
+impl Clone for TaskStatus {
+    fn clone(&self) -> TaskStatus {
+        match self {
+            TaskStatus::Done => TaskStatus::Done,
+            TaskStatus::InProgress => TaskStatus::InProgress,
+            TaskStatus::NotDone => TaskStatus::NotDone,
+        }
+    }
+}
+impl std::fmt::Display for TaskStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            TaskStatus::Done => write!(f, "Done"),
+            TaskStatus::InProgress => write!(f, "In Progress"),
+            TaskStatus::NotDone => write!(f, "Not Done"),
+        }
+    }
 }
 pub fn new(task_name: String) -> Task {
     Task {
