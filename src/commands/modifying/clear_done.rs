@@ -1,7 +1,5 @@
-use crate::{config, entities, storage::ModifyStorage};
-
-use super::super::{BaseModifyCommand, Command};
-
+use super::super::{config, entities, storage::ModifyStorage, Command};
+use super::BaseModifyCommand;
 pub struct ClearDoneCommand {
     base: BaseModifyCommand,
 }

@@ -1,8 +1,5 @@
-use crate::config;
-use crate::storage::ModifyStorage;
-
-use super::super::entities;
-use super::super::{BaseModifyCommand, Command};
+use super::super::{config, entities, storage::ModifyStorage, Command};
+use super::BaseModifyCommand;
 pub struct MarkDoneCommand {
     base: BaseModifyCommand,
 }

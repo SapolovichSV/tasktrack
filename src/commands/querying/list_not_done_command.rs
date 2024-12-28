@@ -1,5 +1,5 @@
-use super::super::{config, entities, storage, BaseQueryCommand, Command};
-
+use super::super::{config, entities, storage, Command};
+use super::BaseQueryCommand;
 pub struct ListNotDoneCommand {
     base: BaseQueryCommand,
 }

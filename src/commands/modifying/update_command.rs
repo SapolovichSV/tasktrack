@@ -1,7 +1,5 @@
-use crate::{config, entities, storage};
-
-use super::super::{BaseModifyCommand, Command};
-
+use super::super::{config, entities, storage::ModifyStorage, Command};
+use super::BaseModifyCommand;
 pub struct UpdateNameCommand {
     base: BaseModifyCommand,
 }
@@ -30,7 +28,7 @@ impl Command for UpdateNameCommand {
         self.base.storage.update_task(&task_id, updated_task)
     }
 }
-pub fn new(config: config::Config, storage: Box<dyn storage::ModifyStorage>) -> UpdateNameCommand {
+pub fn new(config: config::Config, storage: Box<dyn ModifyStorage>) -> UpdateNameCommand {
     UpdateNameCommand {
         base: BaseModifyCommand::new(config, storage),
     }

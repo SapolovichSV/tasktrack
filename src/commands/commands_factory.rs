@@ -5,8 +5,7 @@ use super::modifying::{
     update_command,
 };
 use super::querying::{list_all_command, list_done_command, list_not_done_command};
-use super::Command;
-use super::{config, entities, storage::StorageType};
+use super::{config, entities, storage::StorageType, Command};
 
 pub fn create_command(
     config: config::Config,
@@ -17,6 +16,7 @@ pub fn create_command(
         entities::command_kind::CommandKind::Querying => create_querying_command(config, storage),
     }
 }
+
 fn create_modifying_command(
     config: config::Config,
     storage: StorageType,
@@ -38,6 +38,7 @@ fn create_modifying_command(
             Ok(Box::new(mark_done_command::new(config, storage)))
         }
         entities::commands::Commands::ClearDone => Ok(Box::new(clear_done::new(config, storage))),
+
         _ => Err("Invalid command".into()),
     }
 }

@@ -1,12 +1,11 @@
-use crate::{config, storage};
-
-use super::super::{entities, BaseQueryCommand, Command};
-
+use super::super::{config, entities, storage::QueryStorage, Command};
+use super::BaseQueryCommand;
+use std::error::Error;
 pub struct ListDoneCommand {
     base: BaseQueryCommand,
 }
 impl Command for ListDoneCommand {
-    fn execute(&self) -> Result<(), Box<dyn std::error::Error>> {
+    fn execute(&self) -> Result<(), Box<dyn Error>> {
         let last_task_number = self.base.storage.last_id()?;
         println!("Tasks -----------------");
         for id in 1..last_task_number {
@@ -25,7 +24,7 @@ impl Command for ListDoneCommand {
         Ok(())
     }
 }
-pub fn new(config: config::Config, storage: Box<dyn storage::QueryStorage>) -> ListDoneCommand {
+pub fn new(config: config::Config, storage: Box<dyn QueryStorage>) -> ListDoneCommand {
     let _config = config;
     ListDoneCommand {
         base: BaseQueryCommand::new(storage),

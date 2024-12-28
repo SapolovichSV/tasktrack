@@ -1,4 +1,5 @@
-use super::super::{entities, BaseQueryCommand, Command};
+use super::super::{entities, Command};
+use super::BaseQueryCommand;
 pub struct ListProgressCommand {
     base: BaseQueryCommand,
 }

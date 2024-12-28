@@ -1,7 +1,5 @@
-use crate::{config, entities, storage};
-
-use super::super::{BaseModifyCommand, Command};
-
+use super::super::{config, entities, storage::ModifyStorage, Command};
+use super::BaseModifyCommand;
 pub struct MarkInProgressCommand {
     base: BaseModifyCommand,
 }
@@ -20,10 +18,7 @@ impl Command for MarkInProgressCommand {
         Ok(())
     }
 }
-pub fn new(
-    config: config::Config,
-    storage: Box<dyn storage::ModifyStorage>,
-) -> MarkInProgressCommand {
+pub fn new(config: config::Config, storage: Box<dyn ModifyStorage>) -> MarkInProgressCommand {
     MarkInProgressCommand {
         base: BaseModifyCommand::new(config, storage),
     }
